@@ -1,4 +1,5 @@
-const API_ENDPOINTS = ["/orders", "http://localhost:8000/orders"];
+const API_BASE_URL = "http://127.0.0.1:8000";
+const API_ENDPOINTS = [`${API_BASE_URL}/orders`, "http://localhost:8000/orders"];
 
 const products = [
   {
@@ -339,7 +340,7 @@ function renderProducts() {
             <div class="product-image-fallback" style="display:none">${escapeHtml(fallbackText)}</div>
           </div>
           <div class="product-copy">
-            <p class="product-brand">Satıcı: ${escapeHtml(product.seller)}</p>
+            <p class="product-brand">${escapeHtml(product.seller)}</p>
             <h3>${escapeHtml(product.name)}</h3>
             <p>${escapeHtml(product.sector)}</p>
           </div>
@@ -652,7 +653,8 @@ async function submitOrder(payload) {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        const errorText = await response.text().catch(() => "");
+        throw new Error(`HTTP ${response.status}${errorText ? ` - ${errorText}` : ""}`);
       }
 
       const data = await response.json().catch(() => ({}));

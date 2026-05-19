@@ -1,5 +1,4 @@
 const API_BASE_URL = "http://127.0.0.1:8000";
-const API_ENDPOINTS = [`${API_BASE_URL}/orders`, "http://localhost:8000/orders"];
 
 const products = [
   {
@@ -630,7 +629,8 @@ async function placeOrder() {
     const response = await submitOrder(payload);
     showSuccess(response.order_id || payload.order_id, payload.total_vera_points, false);
   } catch (error) {
-    console.error("Sipariş demo moda düştü:", error);
+    console.error("Order submission failed; using demo fallback.", error);
+    showToast("Backend'e ulasilamadi. Demo siparisi olusturuldu; kayit backend'e gonderilemedi.");
     showSuccess(payload.order_id, payload.total_vera_points, true);
   } finally {
     elements.btnPlaceOrder.disabled = false;
@@ -642,29 +642,18 @@ async function placeOrder() {
 }
 
 async function submitOrder(payload) {
-  let lastError;
+  const response = await fetch(`${API_BASE_URL}/orders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-  for (const endpoint of API_ENDPOINTS) {
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => "");
-        throw new Error(`HTTP ${response.status}${errorText ? ` - ${errorText}` : ""}`);
-      }
-
-      const data = await response.json().catch(() => ({}));
-      return data;
-    } catch (error) {
-      lastError = error;
-    }
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(`HTTP ${response.status}${errorText ? ` - ${errorText}` : ""}`);
   }
 
-  throw lastError || new Error("Sipariş gönderilemedi.");
+  return response.json().catch(() => ({}));
 }
 
 function buildOrderPayload() {

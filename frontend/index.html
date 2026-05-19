@@ -1,12 +1,235 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>E-Ticaret Sitesi</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MorPazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <script src="script.js"></script>
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="MorPazar ana sayfa">
+        <div class="logo-mark">MP</div>
+        <div class="logo-copy">
+          <span class="logo-text">MorPazar</span>
+        </div>
+      </a>
+
+      <div class="header-search">
+        <label class="sr-only" for="searchInput">Ürün ara</label>
+        <input type="search" id="searchInput" placeholder="Ürün, marka veya sektör ara">
+      </div>
+
+      <nav class="main-nav" aria-label="Kategori menüsü">
+        <button class="nav-sector active" data-sector="all">Tümü</button>
+        <button class="nav-sector" data-sector="Tekstil &amp; Giyim">Tekstil &amp; Giyim</button>
+        <button class="nav-sector" data-sector="Kozmetik &amp; Bakım">Kozmetik &amp; Bakım</button>
+        <button class="nav-sector" data-sector="Gıda &amp; Market">Gıda &amp; Market</button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="cart-trigger" id="cartTrigger" type="button" aria-label="Sepeti aç">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span>Sepetim</span>
+          <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-shell">
+    <section class="products-section" id="productsView">
+      <div class="products-header">
+        <div>
+          <h2 id="sectionTitle">Tüm Ürünler</h2>
+        </div>
+        <div class="filter-row">
+          <label class="sr-only" for="sectorFilter">Sektör filtresi</label>
+          <select id="sectorFilter" class="sort-sel">
+            <option value="all">Tüm sektörler</option>
+          </select>
+
+          <label class="sr-only" for="brandFilter">Marka filtresi</label>
+          <select id="brandFilter" class="sort-sel">
+            <option value="all">Tüm markalar</option>
+          </select>
+
+          <label class="sr-only" for="sortSelect">Sıralama</label>
+          <select id="sortSelect" class="sort-sel">
+            <option value="default">Önerilen</option>
+            <option value="price-asc">Fiyat artan</option>
+            <option value="price-desc">Fiyat azalan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-meta">
+        <p id="resultsInfo">9 ürün gösteriliyor</p>
+      </div>
+
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <section class="checkout-page hidden" id="checkoutView">
+      <div class="checkout-page-inner">
+        <div class="checkout-page-top">
+          <div>
+            <p class="checkout-breadcrumb">Sepet &gt; Teslimat &gt; Yeşil Seçenekler &gt; Özet</p>
+            <h2 class="checkout-title">Siparişi Tamamla</h2>
+          </div>
+          <button class="btn-ghost" id="backToShop" type="button">Alışverişe Dön</button>
+        </div>
+
+        <div class="checkout-panel">
+          <div class="modal-head checkout-steps-head">
+            <div class="msteps">
+              <div class="mstep active" id="ms1"><span>1</span>Teslimat</div>
+              <div class="mstep-line"></div>
+              <div class="mstep" id="ms2"><span>2</span>Yeşil Seçenekler</div>
+              <div class="mstep-line"></div>
+              <div class="mstep" id="ms3"><span>3</span>Özet</div>
+            </div>
+          </div>
+
+          <div id="stepDelivery" class="modal-step">
+            <h4 id="checkoutHeading">Teslimat Bilgileri</h4>
+            <div class="form-grid">
+              <div class="fg">
+                <label for="fName">Ad Soyad</label>
+                <input type="text" id="fName" placeholder="Adınız Soyadınız">
+              </div>
+              <div class="fg">
+                <label for="fEmail">E-posta</label>
+                <input type="email" id="fEmail" placeholder="ornek@mail.com">
+              </div>
+              <div class="fg full">
+                <label for="fAddress">Adres</label>
+                <textarea id="fAddress" rows="3" placeholder="Teslimat adresi"></textarea>
+              </div>
+            </div>
+            <div class="step-btns">
+              <button class="btn-ghost" type="button" id="backToShopFromDelivery">Alışverişe Dön</button>
+              <button class="btn-primary" id="continueToGreen" type="button">Devam Et →</button>
+            </div>
+          </div>
+
+          <div id="stepGreen" class="modal-step hidden">
+            <div class="green-intro">
+              <div class="gi-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3C7.46 19.79 8.79 20 10 20a8 8 0 0 0 8-8c0-2-1-3.83-1-3.83Z"/></svg>
+              </div>
+              <div>
+                <strong>LeafPay Uyumlu Yeşil Seçenekler</strong>
+                <p>Bu seçimlerden VERA puanı kazanılır.</p>
+              </div>
+            </div>
+            <div id="greenOpts" class="green-opts"></div>
+            <div class="vera-bar">
+              <span>Kazanılacak VERA:</span>
+              <strong id="veraCount">0 puan</strong>
+            </div>
+            <div class="step-btns">
+              <button class="btn-ghost" id="backToDelivery" type="button">← Geri</button>
+              <button class="btn-primary" id="continueToSummary" type="button">Özete Git →</button>
+            </div>
+          </div>
+
+          <div id="stepSummary" class="modal-step hidden">
+            <h4>Sipariş Özeti</h4>
+            <div id="summaryItems" class="summary-items"></div>
+            <div id="summaryGreenList" class="summary-green"></div>
+            <div class="summary-totals">
+              <div class="st-row"><span>Ürünler</span><span id="stProducts">₺0</span></div>
+              <div class="st-row total-row"><strong>Genel Toplam</strong><strong id="stTotal">₺0</strong></div>
+              <div class="st-row vera-row"><span>Kazanılacak VERA</span><strong id="stVera">0 puan</strong></div>
+            </div>
+            <div class="step-btns">
+              <button class="btn-ghost" id="backToGreen" type="button">← Geri</button>
+              <button class="btn-order" id="btnPlaceOrder" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Siparişi Onayla</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="success-page hidden" id="successView">
+      <div class="success-page-inner">
+        <div class="success-box">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <p class="checkout-breadcrumb">Sepet &gt; Teslimat &gt; Yeşil Seçenekler &gt; Özet &gt; Tamamlandı</p>
+          <h3 id="successTitle">Sipariş alındı</h3>
+          <p id="successOrderId" class="success-sub"></p>
+          <div class="success-vera" id="successVera">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3C7.46 19.79 8.79 20 10 20a8 8 0 0 0 8-8c0-2-1-3.83-1-3.83Z"/></svg>
+            <span id="successVeraText"></span>
+          </div>
+          <div class="step-btns success-actions">
+            <button class="btn-ghost" id="successBackToShop" type="button">Alışverişe Dön</button>
+            <button class="btn-primary" id="successClose" type="button">Yeni Alışveriş Başlat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="overlay" id="drawerOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-labelledby="cartTitle">
+    <div class="drawer-head">
+      <div>
+        <p class="drawer-kicker">Canlı sepet</p>
+        <h3 id="cartTitle">Sepetim</h3>
+      </div>
+      <button class="icon-btn" id="drawerClose" type="button" aria-label="Sepeti kapat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="drawer-items" id="drawerItems">
+      <div class="empty-state">
+        <div class="es-icon">MP</div>
+        <p>Sepetiniz boş. Ürün ekleyerek alışverişe başlayın.</p>
+      </div>
+    </div>
+
+    <div class="drawer-foot" id="drawerFoot" style="display:none">
+      <div class="drawer-total-row"><span>Ürün toplamı</span><strong id="drawerSubtotal">₺0</strong></div>
+      <div class="drawer-total-row grand"><span>Genel toplam</span><strong id="drawerTotal">₺0</strong></div>
+      <button class="btn-primary w-full" id="btnCheckout" type="button">Siparişe Geç</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo footer-logo">
+          <div class="logo-mark">MP</div>
+          <div class="logo-copy">
+            <span class="logo-text">MorPazar</span>
+            <span class="logo-subtext">Demo pazaryeri</span>
+          </div>
+        </div>
+        <p>Bağımsız demo e-ticaret sitesi. Ürün keşfi, sepet ve checkout deneyimini örneklemek için tasarlanmıştır.</p>
+      </div>
+      <div class="footer-cols">
+        <div><strong>Platform</strong><a href="#">Hakkında</a><a href="#">Markalar</a><a href="#">Destek</a></div>
+        <div><strong>Kategoriler</strong><a href="#">Tekstil &amp; Giyim</a><a href="#">Kozmetik &amp; Bakım</a><a href="#">Gıda &amp; Market</a></div>
+        <div><strong>Bilgi</strong><a href="#">Gizlilik</a><a href="#">KVKK</a><a href="#">Koşullar</a></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>MorPazar © 2026 · İstanbul</span><span>Demo marketplace deneyimi</span></div>
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
